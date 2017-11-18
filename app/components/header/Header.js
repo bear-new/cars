@@ -5,7 +5,6 @@ import {
   Image,
   View
 } from 'react-native';
-import { StackNavigator } from 'react-navigation';
 
 const styles = StyleSheet.create({
     headerStyle: {
@@ -25,9 +24,9 @@ export default class Header extends React.Component {
   render() {
     return (
       <View style={styles.headerStyle}>
-        <Image source={require('../assets/images/home.png')}
-              style={{width: 30, height: 30}} />
-        <Text style={styles.headerTitleStyle}>首页</Text>
+        <Image source={require('../../assets/images/prev1.png')}
+              style={{width: 30, height: 30}} onPress={() => { this.props.navigate }}/>
+        <Text style={styles.headerTitleStyle}>{ this.props.title }</Text>
       </View>
     )
   }

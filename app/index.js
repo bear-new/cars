@@ -18,7 +18,6 @@ import HomeView from './pages/HomeView';
 import CarView from './pages/CarView';
 import DiscoverView from './pages/DiscoverView';
 import MyView from './pages/MyView';
-import Search from './pages/details/Search';
 /* redux */
 import { bindActionCreators } from 'redux'
 import { createStore } from 'redux';

@@ -30,8 +30,8 @@ export default class CarView extends React.Component {
       let brand = await FetchRequest('/brand?pagesize=50','get', '');
       let news = await FetchRequest('/news','get', '');
       this.setState({
-        brand,
-        news
+        brand: brand.list,
+        news: news.list
       })
     })()
   }
@@ -39,13 +39,13 @@ export default class CarView extends React.Component {
    // 新闻列表
   renderBrandList(list) {
     console.log('render')
-    return list.map( item => this.renderBrand(item) )
+    return list.map( (item, index) => this.renderBrand(item, index) )
   }
 
-  renderBrand(item) {
+  renderBrand(item, index) {
     console.log(item.img)
     return (
-      <View style={styles.brand}>
+      <View style={styles.brand} key={index}>
         <Image source={{uri: item.img}} style={{width: 30, height: 20}}></Image>
         <Text>{item.name}</Text>
       </View>

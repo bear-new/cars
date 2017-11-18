@@ -107,5 +107,12 @@ const styles = StyleSheet.create({
     paddingTop: 6,
     backgroundColor: '#eee',
     borderTopColor: '#333',
+    shadowColor: 'red',
+    shadowOpacity: 0.6,
+    shadowRadius: 10,
+    shadowOffset: {
+      height: 5,
+      width: 5
+    }
   },
 });

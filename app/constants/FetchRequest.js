@@ -19,11 +19,16 @@ function FetchRequest(url, method, params = ''){
                 headers: header
             })).then((response) => response.json())
                 .then((responseData) => {
-                    // console.log('res:',url,responseData);  //网络请求成功返回的数据
-                    resolve(responseData);
+                    // console.log('res:',url, responseData);   //网络请求成功返回的数据
+                    if ( responseData.hasOwnProperty('status') ) {
+                       resolve(responseData);
+                    } else {
+                        reject(responseData);
+                    }
                 })
                 .catch( (err) => {
-                    // console.log('err:',url, err);     //网络请求失败返回的数据        
+                    console.log('err'+err)
+                    // console.log('err:',url, err);   //网络请求失败返回的数据  
                     reject(JSON.stringify(err));
                 });
         });
@@ -36,9 +41,14 @@ function FetchRequest(url, method, params = ''){
             })).then((response) => response.json())
                 .then((responseData) => {
                     // console.log('res:',url, responseData);   //网络请求成功返回的数据
-                    resolve(responseData);
+                    if ( responseData.hasOwnProperty('status') ) {
+                       resolve(responseData);
+                    } else {
+                        reject(responseData);
+                    }
                 })
                 .catch( (err) => {
+                    console.log('err'+err)
                     // console.log('err:',url, err);   //网络请求失败返回的数据  
                     reject(JSON.stringify(err));
                 });

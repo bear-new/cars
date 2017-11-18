@@ -53,13 +53,13 @@ export default class MyView extends React.Component{
 
    // 新闻列表
   renderList(list) {
-    return list.map( item => this.renderItem(item) )
+    return list.map( (item, index) => this.renderItem(item, index) )
   }
 
-  renderItem(item) {
+  renderItem(item, index) {
     console.log(item.img)
     return (
-      <View style={styles.box}>
+      <View style={styles.box} key={index}>
         <View style={styles.left}>
           <View style={styles.avatar}>
             <Image source={item.img} style={{width: 20, height: 20}} resizeMode={'cover'}/>

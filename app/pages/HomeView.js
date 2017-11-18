@@ -7,7 +7,10 @@ import {
   Button,
   TextInput,
   ScrollView,
-  TouchableHighlight
+  TouchableHighlight,
+  TouchableNativeFeedback,
+  TouchableOpacity,
+  TouchableWithoutFeedback
 } from 'react-native';
 /* lib */
 import { StackNavigator } from 'react-navigation';
@@ -18,18 +21,22 @@ import FetchRequest from '../constants/FetchRequest';
 import Slider from '../components/header/Slider';
 import NewsList from '../components/common/NewsList';
 /* pages */
-import Search from './details/Search';
+import Search from './home/Search';
+import NewCars from './home/NewCars';
+import Evaluate from './home/Evaluate';
+import Rank from './home/Rank';
+import CarsDetails from './home/CarsDetails';
+import NewsDetails from './home/NewsDetails';
 
 class HomePage extends React.Component {
 
   constructor(props) {
     super(props);
-  
     this.state = {
       text: '',
       banner: [],
       carsList: [],
-      news: []
+      news: [],
     };
   }
 
@@ -38,76 +45,67 @@ class HomePage extends React.Component {
       let banner = await FetchRequest('/banner','get', '');
       let carsList = await FetchRequest('/carsList','get', '');
       let news = await FetchRequest('/news','get', '');
+      console.log(news)
       this.setState({
-        banner,
-        carsList,
-        news,
+        banner: banner.list,
+        carsList: carsList.list,
+        news: news.list,
       })
     })()
   }
 
   // 主打车
   renderCarsList(list) {
-    return list.map( item => this.renderCars(item) )
+    return list.map( (item, index) => this.renderCars(item, index) )
   }
 
-  renderCars(item) {
+  renderCars(item, index) {
+    const { navigate } = this.props.navigation;
     return (
-      <View style={styles.cars}>
-        <Image source={{uri: item.img}} style={{width: 60, height: 60}}></Image>
-        <Text>{item.name}</Text>
-      </View>
+        <TouchableOpacity style={styles.cars} key={index} onPress={() => navigate('CarsDetails', {details: item})}>
+          <Image source={{uri: item.img}} style={{width: 60, height: 60, borderRadius: 50}}></Image>
+          <Text style={{}}>{item.name}</Text>
+        </TouchableOpacity>
     )
   }
 
-  // 新闻列表
-  renderNewsList(list) {
-    return list.map( item => this.renderNews(item) )
-  }
-
-  renderNews(item) {
-    return (
-      <View style={styles.news}>
-        <Image source={{uri: item.img}} style={{width: 60, height: 60}}></Image>
-      </View>
-    )
-  }
-
-  onSubmit() {
-
+  // 跳转到新闻详情
+  goDetails(link) {
+    const { navigate } = this.props.navigation;
+    navigate('NewsDetails', { link });
   }
 
   render () {
     const { navigate } = this.props.navigation;
     return (
-      <View style={{flex: 1}}>
+      <ScrollView style={{flex: 1}}>
         <TextInput
-          style={{height: 40}}
+          style={{height: 50}}
           placeholder="请输入你要查找的车型"
           onChangeText={(text) => this.setState({text})}
           onSubmitEditing={() => navigate('Search', {name: this.state.text})}
         />
-        <Image source={require('../assets/images/discover/查询.png')} style={{position: 'absolute',top: 10, right: 10,width: 20,height: 20,}}/>
-        <View style={{flex: 3}}>
-          <Slider banner={this.state.banner}/>
+        <Image source={require('../assets/images/discover/查询.png')} style={{position: 'absolute',top: 15, right: 10,width: 20,height: 20,}}/>
+        <View style={{flex: 3, height: 150, marginTop: -6}}>
+          <Slider banner={this.state.banner} goDetails={ this.goDetails.bind(this) }/>
         </View>
         <View style={styles.iconWrapper}>
-          <View style={styles.icon}>
+          <TouchableOpacity style={styles.icon} onPress={() => navigate('NewCars')}>
             <Image source={require('../assets/images/new.png')} style={{width: 35, height: 35}}/>
             <Text>上市新车</Text>
-          </View>
-          <View style={styles.icon}>
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.icon} onPress={() => navigate('Evaluate')}>
             <Image source={require('../assets/images/information.png')} style={{width: 35, height: 35}}/>
-            <Text>评测咨询</Text>
-          </View>
-          <View style={styles.icon}>
+            <Text>爱车估值</Text>
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.icon} onPress={() => navigate('Rank')}>
             <Image source={require('../assets/images/sale.png')} style={{width: 35, height: 35}}/>
             <Text>降价促销</Text>
-          </View>
-          <View style={styles.icon}>
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.icon} onPress={() => navigate('Rank')}>
             <Image source={require('../assets/images/rank.png')} style={{width: 35, height: 35}}/>
             <Text>热门排行</Text>
-          </View>
+          </TouchableOpacity>
         </View>
         <View style={{flex: 3}}>
           <View style={styles.titleBox}>
@@ -117,23 +115,22 @@ class HomePage extends React.Component {
             { this.renderCarsList(this.state.carsList) }
           </ScrollView>
         </View>
-        <View style={{flex: 2}}>
+        <View style={{flex: 2, paddingBottom: 20, backgroundColor: '#FFF'}}>
           <View style={styles.titleBox}>
             <Text style={styles.title}>汽车快讯</Text>
-            <ScrollView horizontal={true} showsHorizontalScrollIndicator={false}>
-            { this.renderNewsList(this.state.news) }
-            </ScrollView>
+            <View style={{backgroundColor: '#FFF'}}>
+              <NewsList newsData={this.state.news} goDetails={this.goDetails.bind(this)}/>
+            </View>
           </View>
         </View>
-      </View>
+      </ScrollView>
     )
   }
 }
 
 const styles = StyleSheet.create({
   iconWrapper: {
-    // flex: 2.5,
-    height: 100,
+    height: 80,
     flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'center',
@@ -150,15 +147,15 @@ const styles = StyleSheet.create({
   // 主打车
   title: {
     padding: 5,
-    fontSize: 10,
-    fontWeight: 'bold'
+    fontSize: 14,
+    color: '#333'
   },
   cars: {
     flex: 1,
-    justifyContent: 'center',
+    justifyContent: 'space-around',
     alignItems: 'center',
     backgroundColor: '#FFF',
-    padding: 5,
+    padding: 8,
   },
   // 资讯
   news: {
@@ -177,10 +174,71 @@ const HomeView = StackNavigator({
       header: null,
     },
   },
+  // 搜索
   Search: {
     screen: Search,
     navigationOptions: {
       headerTitle: '汽车搜索',
+      headerTitleStyle: {
+        color: '#F25C29',
+        fontSize: 16,
+      },
+      headerTintColor: '#F25C29'
+    },
+  },
+  // 上市新车
+  NewCars: {
+    screen: NewCars,
+    navigationOptions: {
+      header: null,
+    },
+  },
+  // 爱车估值
+  Evaluate: {
+    screen: Evaluate,
+    navigationOptions: {
+      headerTitle: '估值',
+      headerTitleStyle: {
+        color: '#F25C29',
+        fontSize: 16,
+      },
+      headerTintColor: '#F25C29'
+    },
+  },
+  // 降价促销/热门排行
+  Rank: {
+    screen: Rank,
+    navigationOptions: {
+      headerTitle: '促销-排行',
+      headerTitleStyle: {
+        color: '#F25C29',
+        fontSize: 16,
+      },
+      headerTintColor: '#F25C29'
+    },
+  },
+  // 汽车详情
+  CarsDetails: {
+    screen: CarsDetails,
+    navigationOptions: {
+      headerTitle: '汽车详情',
+      headerTitleStyle: {
+        color: '#F25C29',
+        fontSize: 16,
+      },
+      headerTintColor: '#F25C29'
+    },
+  },
+  // 新闻详情
+  NewsDetails: {
+    screen: NewsDetails,
+    navigationOptions: {
+      headerTitle: '详情',
+      headerTitleStyle: {
+        color: '#F25C29',
+        fontSize: 16,
+      },
+      headerTintColor: '#F25C29'
     },
   },
 });
