@@ -143,7 +143,7 @@ export default class Sort extends React.Component {
 
 	render() {
     	return (
-    		<View>
+    		<View style={{marginBottom: 90}}>
     			<SortSelect options={this.state.options} onChangeSelect={this.changeSelect.bind(this)}/>
     			<CarsList carsList={this.state.carsList}/>
     		</View>

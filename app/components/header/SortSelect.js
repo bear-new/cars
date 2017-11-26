@@ -48,6 +48,7 @@ const styles = StyleSheet.create({
     display: 'flex',
     flexDirection: 'row',
     justifyContent: 'center',
+    height: 45
   },
   sortItem: {
     flex: 1,
