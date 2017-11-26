@@ -30,15 +30,15 @@ export default class Slider extends React.Component {
 
 	render() {
 		const { banner } = this.props;
-		return (
-			<Swiper style={styles.wrapper}
-					horizontal={true} 
-					paginationStyle={{position: 'absolute', bottom: 5}}
-					dot={<View style={{backgroundColor:'rgba(0,0,0,.5)', width: 8, height: 8, borderRadius: 4, marginLeft: 3, marginRight: 3, }} />}
-					activeDotStyle={{backgroundColor: 'rgba(255,255,255,.8)'}}
-					showsPagination={true}
-					>
-				{
+		if (banner.length) {
+			return (
+		      	<Swiper style={styles.wrapper} 
+		      			autoplay={true}
+		      			dot={<View style={{backgroundColor:'rgba(0,0,0,.5)', width: 8, height: 8, borderRadius: 4, marginLeft: 3, marginRight: 3, }} />}
+						activeDotStyle={{backgroundColor: 'rgba(255,255,255,.8)'}}
+						paginationStyle={{position: 'absolute', bottom: 5}}
+      			>
+		        {
 					banner.map((item, index) => {
 						return (
 							<View style={styles.slide} key={index}>
@@ -49,8 +49,13 @@ export default class Slider extends React.Component {
 						)
 					})
 				}
-	      	</Swiper>
-		)
+		      </Swiper>
+		    )
+		} else {
+			return (
+				<View></View>
+			)
+		}
 	}
 }
 
@@ -68,4 +73,29 @@ const styles = StyleSheet.create({
     	height: 2,
     	resizeMode: Image.resizeMode.stretch,
     },
+    wrapper: {
+  },
+  slide1: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: '#9DD6EB',
+  },
+  slide2: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: '#97CAE5',
+  },
+  slide3: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: '#92BBD9',
+  },
+  text: {
+    color: '#fff',
+    fontSize: 30,
+    fontWeight: 'bold',
+  }
 });

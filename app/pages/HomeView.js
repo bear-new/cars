@@ -25,6 +25,7 @@ import Search from './home/Search';
 import NewCars from './home/NewCars';
 import Evaluate from './home/Evaluate';
 import Rank from './home/Rank';
+import Sort from './home/Sort';
 import CarsDetails from './home/CarsDetails';
 import NewsDetails from './home/NewsDetails';
 
@@ -98,11 +99,11 @@ class HomePage extends React.Component {
             <Image source={require('../assets/images/information.png')} style={{width: 35, height: 35}}/>
             <Text>爱车估值</Text>
           </TouchableOpacity>
-          <TouchableOpacity style={styles.icon} onPress={() => navigate('Rank')}>
+          <TouchableOpacity style={styles.icon} onPress={() => navigate('Rank', {keys:{ go_back_key: this.props.navigation.state.key,}})}>
             <Image source={require('../assets/images/sale.png')} style={{width: 35, height: 35}}/>
             <Text>降价促销</Text>
           </TouchableOpacity>
-          <TouchableOpacity style={styles.icon} onPress={() => navigate('Rank')}>
+          <TouchableOpacity style={styles.icon} onPress={() => navigate('Sort')}>
             <Image source={require('../assets/images/rank.png')} style={{width: 35, height: 35}}/>
             <Text>热门排行</Text>
           </TouchableOpacity>
@@ -205,11 +206,23 @@ const HomeView = StackNavigator({
       headerTintColor: '#F25C29'
     },
   },
-  // 降价促销/热门排行
+  // 降价促销
   Rank: {
     screen: Rank,
     navigationOptions: {
-      headerTitle: '促销-排行',
+      headerTitle: '降价促销',
+      headerTitleStyle: {
+        color: '#F25C29',
+        fontSize: 16,
+      },
+      headerTintColor: '#F25C29'
+    },
+  },
+  // 热门排行
+  Sort: {
+    screen: Sort,
+    navigationOptions: {
+      headerTitle: '热门排行',
       headerTitleStyle: {
         color: '#F25C29',
         fontSize: 16,

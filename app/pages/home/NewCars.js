@@ -49,30 +49,30 @@ export default class NewCars extends React.Component{
     let { carsList } = this.state;
     return (
       <View>
-            <TouchableNativeFeedback onPress={() => { goBack() }}>
-              <Image source={require('../../assets/images/prev1.png')}
-                style={{width: 20, height: 20, position: 'absolute', top: 12, left: 5, zIndex: 10}}/>
-            </TouchableNativeFeedback>
-            <SegmentedControl style={styles.segmented} values={['新车上市', '即将销售']}  dataSource={this.state.carsList} selectedIndex={0} onChange={this.onChange.bind(this)}/>
-            <FlatList
-              style={styles.list}
-              data={this.state.carsList}
-              renderItem={({item}) => {
-                return (
-                  <View style={styles.itemBox}>
-                    <Image source={{uri: item.img}} style={{width: 80, height: 80, borderRadius: 2}}/>
-                    <View style={styles.info}>
-                      <Text>{item.name}</Text>
-                      <View style={{flexDirection: 'row'}}>
-                        <Text>变速箱：</Text>
-                        <Text>{item.gearbox}</Text>
-                      </View>
-                      <Text style={{color: '#DD6E32'}}>{item.price}</Text>
-                    </View>
+        <TouchableNativeFeedback onPress={() => { goBack() }}>
+          <Image source={require('../../assets/images/prev1.png')}
+            style={{width: 20, height: 20, position: 'absolute', top: 12, left: 5, zIndex: 10}}/>
+        </TouchableNativeFeedback>
+        <SegmentedControl style={styles.segmented} values={['新车上市', '即将销售']}  dataSource={this.state.carsList} selectedIndex={0} onChange={this.onChange.bind(this)}/>
+        <FlatList
+          style={styles.list}
+          data={this.state.carsList}
+          renderItem={({item}) => {
+            return (
+              <View style={styles.itemBox}>
+                <Image source={{uri: item.img}} style={{width: 80, height: 80, borderRadius: 2}}/>
+                <View style={styles.info}>
+                  <Text>{item.name}</Text>
+                  <View style={{flexDirection: 'row'}}>
+                    <Text>变速箱：</Text>
+                    <Text>{item.gearbox}</Text>
                   </View>
-                )
-              }}
-            />
+                  <Text style={{color: '#DD6E32'}}>{item.price}</Text>
+                </View>
+              </View>
+            )
+          }}
+        />
       </View>
     )
   }

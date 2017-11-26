@@ -10,6 +10,8 @@ import {
 import { TabNavigator, NavigationActions } from "react-navigation";
 /* constants */
 import FetchRequest from '../../constants/FetchRequest';
+/* menu */
+import SortSelect from '../../components/header/SortSelect';
 
 class CarsList extends React.Component {
 	
@@ -61,23 +63,47 @@ class CarsList extends React.Component {
 	}
 }
 
-class Sedan extends React.Component {
+export default class Sort extends React.Component {
 
 	constructor(props) {
 	  super(props);
 	
 	  this.state = {
+	  	options: [
+	  		{
+	  			value: '价格',
+	  			select: 'top'
+	  		},
+	  		{
+	  			value: '销量',
+	  			select: ''
+	  		},
+	  	],
+	  	select: {
+	  		value: 'price',
+	  		type: 1
+	  	},
 	  	carsList: []
 	  };
 	}
 
 	componentWillMount() {
-		FetchRequest('/carsList/rank', 'post', {type: '中型车'}
+		this.getCarsList();
+	}
+
+	// 请求carsList
+	getCarsList() {
+		FetchRequest('/carsList/sort', 
+			'post', 
+			{
+				sortValue: this.state.select.value,
+				sortType: this.state.select.type
+			}
 	    ).then((res) => {
 	      	var data = res.list;
 	      	this.setState({
-        		carsList: data
-      		})	
+	    		carsList: data
+	  		})	
 	      	if ( res.status === 0 ) {
 	        	this.alertInfo(res.message);
 	      	} 
@@ -86,101 +112,45 @@ class Sedan extends React.Component {
 	    })
 	}
 
-  	render() {
+	// 改变排序方式
+	changeSelect(select) {
+		let tmpArr = this.state.options;
+		let tmpObj = this.state.select;
+		// select
+		tmpObj.value = select.sortValue === '价格' ? 'price' : 'name';
+		// options
+		tmpArr.map((item, index) => {
+			if ( item === select ) {
+				if ( item.select ) {
+					item.select = item.select === 'top' ? 'bottom' : 'top';
+					tmpObj.type = item.select === 'top' ? -1 : 1;
+				} else {
+					item.select = 'top';
+					tmpObj.type = -1;
+				}
+			} else {
+				item.select = '';
+			}
+		})
+
+		this.setState({
+			options: tmpArr,
+			select: tmpObj
+		}, () => {
+			this.getCarsList();
+		});
+	}
+
+	render() {
     	return (
-    		<CarsList carsList={this.state.carsList}/>
+    		<View>
+    			<SortSelect options={this.state.options} onChangeSelect={this.changeSelect.bind(this)}/>
+    			<CarsList carsList={this.state.carsList}/>
+    		</View>
 		)
   	}
-}
 
-class Suv extends React.Component {
-  
-  	constructor(props) {
-	  	super(props);
-	
-	  	this.state = {
-	  		carsList: []
-	  	};
-	}
-
-	componentWillMount() {
-		FetchRequest('/carsList/rank', 'post', {type: 'SUV'}
-	    ).then((res) => {
-	      	var data = res.list;
-	      	this.setState({
-        		carsList: data
-      		})	
-	      	if ( res.status === 0 ) {
-	        	this.alertInfo(res.message);
-	      	} 
-	    }).catch((err) => {
-	      	this.alertInfo(err);
-	    })
-	}
-
-  	render() {
-    	return (
-    		<CarsList carsList={this.state.carsList}/>
-		)
-  	}
-}
-
-class Microbus extends React.Component {
-	constructor(props) {
-	  	super(props);
-	
-	  	this.state = {
-	  		carsList: []
-	  	};
-	}
-
-	componentWillMount() {
-		FetchRequest('/carsList/rank', 'post', {type: '微面'}
-	    ).then((res) => {
-	      	var data = res.list;
-	      	this.setState({
-        		carsList: data
-      		})	
-	      	if ( res.status === 0 ) {
-	        	this.alertInfo(res.message);
-	      	} 
-	    }).catch((err) => {
-	      	this.alertInfo(err);
-	    })
-	}
-
-  	render() {
-    	return (
-    		<CarsList carsList={this.state.carsList}/>
-		)
-  	}
-}
-
-const MainScreenNavigator = TabNavigator({
-  小汽车: { screen: Sedan },
-  Suv: { screen: Suv },
-  面包车: { screen: Microbus },
-}, {
-	tabBarPosition: 'top',
-	animationEnabled: true,
-	tabBarOptions: {
-		activeTintColor: '#108EE9',
-		inactiveTintColor: '#333',
-		labelStyle: {
-	    	fontSize: 12,
-	  	},
-	 	style: {
-	 		backgroundColor: 'transparent',
-	    	height: 40,
-	  	},
-	  	indicatorStyle: {
-	  		borderColor: '#108EE9',
-	  		borderBottomWidth: 1,
-	  	}
-	},
-});
-
-export default MainScreenNavigator;
+};
 
 const styles = StyleSheet.create({
   itemBox: {
